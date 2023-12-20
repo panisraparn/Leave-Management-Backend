@@ -13,6 +13,7 @@ def me(request):
         {"id": request.user.id,
          "username": request.user.username,
          "user_id": request.user.user_id,
+         "role": request.user.role,
          "fname": request.user.fname,
          "lname": request.user.lname,
          "email": request.user.email,
@@ -47,8 +48,7 @@ def signup(request):
         form.save()
         # send vertification email later!
     else:
-        print("signup failed")
-        print("form error")
+        print("Signup fail: form error")
         print(form.errors)
         message = "error"
     return JsonResponse({"message": message})
