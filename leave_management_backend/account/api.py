@@ -5,20 +5,23 @@ from rest_framework.decorators import (
     permission_classes,
 )
 from .forms import SignupForm
+from django.contrib.auth.forms import PasswordChangeForm
 
 
 @api_view(["GET"])
 def me(request):
     return JsonResponse(
-        {"id": request.user.id,
-         "username": request.user.username,
-         "user_id": request.user.user_id,
-         "role": request.user.role,
-         "fname": request.user.fname,
-         "lname": request.user.lname,
-         "email": request.user.email,
-         "username": request.user.username
-         }
+        {
+            "id": request.user.id,
+            "username": request.user.username,
+            "user_id": request.user.user_id,
+            "role": request.user.role,
+            "fname": request.user.fname,
+            "lname": request.user.lname,
+            "email": request.user.email,
+            "username": request.user.username,
+            "prefix": request.user.prefix,
+        }
     )
 
 
@@ -40,6 +43,7 @@ def signup(request):
             "role": data.get("role"),
             "password1": data.get("password1"),
             "password2": data.get("password2"),
+            "prefix": data.get("prefix"),
         }
     )
 
@@ -52,3 +56,17 @@ def signup(request):
         print(form.errors)
         message = "error"
     return JsonResponse({"message": message})
+
+
+@api_view(["POST"])
+def editpassword(request):
+    user = request.user
+
+    form = PasswordChangeForm(data=request.POST, user=user)
+
+    if form.is_valid():
+        form.save()
+
+        return JsonResponse({"message": "success"})
+    else:
+        return JsonResponse({"message": form.errors.as_json()}, safe=False)

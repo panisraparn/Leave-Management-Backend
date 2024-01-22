@@ -46,6 +46,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     avatar = models.ImageField(upload_to="avatars", blank=True, null=True)
 
     role = models.CharField(max_length=20, choices=ROLES, default="")
+    prefix = models.CharField(max_length=20, blank=True, null=True)
     
     is_activate = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)

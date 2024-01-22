@@ -14,5 +14,6 @@ class SignupForm(UserCreationForm):
             "password2",
             "fname",
             "lname",
-            "role"
+            "role",
+            "prefix"
         )
