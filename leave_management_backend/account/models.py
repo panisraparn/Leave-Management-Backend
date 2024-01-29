@@ -1,7 +1,9 @@
 from django.db import models
 import uuid
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
+import django.utils.timezone
 from django.utils import timezone
+
 
 # Create your models here.
 
@@ -39,14 +41,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=12, unique=True, default="default_user")
     user_id = models.CharField(max_length=10, blank=True, null=True)
     email = models.EmailField(unique=True)
-    fname = models.CharField(max_length=255, blank=True, null=True)
-    lname = models.CharField(max_length=255, blank=True, null=True)
-    faculty = models.CharField(max_length=255, blank=True, null=True)
-    department = models.CharField(max_length=255, blank=True, null=True)
-    avatar = models.ImageField(upload_to="avatars", blank=True, null=True)
-
     role = models.CharField(max_length=20, choices=ROLES, default="")
-    prefix = models.CharField(max_length=20, blank=True, null=True)
+
     
     is_activate = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)

@@ -61,6 +61,10 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "corsheaders",
     "account",
+    "leave",
+    "student",
+    "teacher",
+    "education"
 ]
 
 MIDDLEWARE = [

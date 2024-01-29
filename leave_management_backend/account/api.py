@@ -6,7 +6,9 @@ from rest_framework.decorators import (
 )
 from .forms import SignupForm
 from django.contrib.auth.forms import PasswordChangeForm
-
+from teacher.models import Teacher
+from student.models import Student
+from account.models import User
 
 @api_view(["GET"])
 def me(request):
@@ -15,12 +17,8 @@ def me(request):
             "id": request.user.id,
             "username": request.user.username,
             "user_id": request.user.user_id,
-            "role": request.user.role,
-            "fname": request.user.fname,
-            "lname": request.user.lname,
             "email": request.user.email,
-            "username": request.user.username,
-            "prefix": request.user.prefix,
+            "role": request.user.role
         }
     )
 
@@ -36,21 +34,51 @@ def signup(request):
     form = SignupForm(
         {
             "username": data.get("username"),
-            "email": data.get("email"),
             "user_id": data.get("user_id"),
-            "fname": data.get("fname"),
-            "lname": data.get("lname"),
-            "role": data.get("role"),
+            "email": data.get("email"),
             "password1": data.get("password1"),
             "password2": data.get("password2"),
-            "prefix": data.get("prefix"),
+            "role": data.get("role")
         }
     )
 
     if form.is_valid():
-        print("save na")
+        print("Already save User")
         form.save()
-        # send vertification email later!
+        role = data.get("role")
+        
+        # ตรวจสอบว่ามีผู้ใช้งานอยู่แล้วหรือไม่
+        try:
+            user = User.objects.get(username= data.get("username"))
+        except User.DoesNotExist:
+            user = None
+
+        if user:
+            if role == "teacher":
+                '''
+                create a new teacher
+                '''
+                teacher = Teacher(
+                    user_id = User.objects.get(id=user.id),
+                    prefix = data.get("prefix"),
+                    fname = data.get("fname"),
+                    lname = data.get("lname")
+                )
+                teacher.save()
+            else:
+                '''
+                create a new Student
+                '''
+                student = Student(
+                    user_id = User.objects.get(id=user.id),
+                    prefix = data.get("prefix"),
+                    fname = data.get("fname"),
+                    lname = data.get("lname")
+                )
+                student.save()
+        else:
+            print("ไม่พบ User")
+        
     else:
         print("Signup fail: form error")
         print(form.errors)
